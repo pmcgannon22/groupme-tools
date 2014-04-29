@@ -64,15 +64,15 @@ oldestId" to continue fetching the past).]
     complete = False
     pageCount = 0
 
-    endpoint = 'https://v2.groupme.com/groups/' + group + '/messages'
+    endpoint = 'https://api.groupme.com/v3/groups/' + group + '/messages'
     headers = {
-        'Accept': 'application/json, text/javascript',
-        'Accept-Charset': 'ISO-8859-1,utf-8',
-        'Accept-Language': 'en-US',
-        'Content-Type': 'application/json',
-        'Origin': 'https://web.groupme.com',
-        'Referer': 'https://web.groupme.com/groups/' + group,
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.45 Safari/537.22',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip,deflate,sdch',
+        'Accept-Language': 'en-US, en;q=0.8',
+        'Origin': 'https://app.groupme.com',
+        'Host':'api.groupme.com',
+        'Referer': 'https://app.groupme.com/chats',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36',
         'X-Access-Token': accessToken
     }
 
