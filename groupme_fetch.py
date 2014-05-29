@@ -65,7 +65,7 @@ oldestId" to continue fetching the past).]
     username = sys.argv[1]
     password = sys.argv[2]
 
-    access_token = get_access_token(username, password, headers)
+    access_token = get_user_access(username, password, headers)[u'response'][u'access_token']
     groups = get_groups(access_token, headers)
     for group in groups:
         print "%s: %s" % (group[u'name'], group[u'id'])
@@ -96,7 +96,13 @@ def messages(token, groupid, before_id=None):
         r = requests.get(endpoint, params=params, headers=headers)
 
         if r.status_code is not 200:
-            raise LookupError("Received response %s" % r.response_code)
+            if r.status_code is 304:
+                break
+            elif r.status_code is 420:
+                print "\n\n\nRATE LIMIT REACHED :(\n\n\n"
+                break
+            else:
+                raise LookupError("Received response %s" % r.status_code)
         response = r.json()
         messages = response[u'response'][u'messages']
         before_id = messages[-1][u'id']
@@ -107,7 +113,7 @@ def messages(token, groupid, before_id=None):
                 message[u'sender_id'] = "0"
             yield message
 
-def get_access_token(username, password):
+def get_user_access(username, password):
     headers = {
         'Referer':'https://app.groupme.com/signin',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36',
@@ -127,9 +133,7 @@ def get_access_token(username, password):
     headers['Host'] = 'v2.groupme.com'
 
     token_endpoint = 'https://v2.groupme.com/access_tokens'
-
-    resp = requests.post(token_endpoint, data=payload, headers=headers).json()
-    return resp[u'response'][u'access_token']
+    return requests.post(token_endpoint, data=payload, headers=headers).json()
 
 def get_groups(access_token):
     headers = {
